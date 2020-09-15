@@ -1,27 +1,61 @@
-﻿<mps:ModPlusWindow x:Class="mprCADmanager.View.DWGImportManagerWindow"
-                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:mps="https://modplus.org/winfx/xaml/controls"
-                      xmlns:model="clr-namespace:mprCADmanager.Model"
-                      SizeToContent="WidthAndHeight" ResizeMode="CanResizeWithGrip"
-                      Loaded="DWGImportManagerWindow_OnLoaded" MinWidth="400" MinHeight="200"
-                      Topmost="True">
+﻿<mps:ModPlusWindow 
+    x:Class="mprCADmanager.View.DWGImportManagerWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mps="https://modplus.org/winfx/xaml/controls"
+    xmlns:model="clr-namespace:mprCADmanager.Model"
+    xmlns:converters="clr-namespace:ModPlusAPI.Converters;assembly=ModPlusAPI"
+    xmlns:viewModel="clr-namespace:mprCADmanager.ViewModel"
+    xmlns:enums="clr-namespace:mprCADmanager.Enums"
+    SizeToContent="WidthAndHeight" ResizeMode="CanResizeWithGrip"
+    Loaded="DWGImportManagerWindow_OnLoaded" MinWidth="400" MinHeight="200"
+    Topmost="True"
+    mc:Ignorable="d" 
+    d:DataContext="{d:DesignInstance viewModel:DWGImportManagerVM, IsDesignTimeCreatable=False}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/ModPlusStyle;component/Styles/Controls.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/mprCADmanager" />
+            <converters:BooleanToVisibilityConverter x:Key="TrueToVisible" TrueVisibility="Visible" FalseVisibility="Collapsed"/>
+            <converters:EnumToIntConverter x:Key="EnumToIntConverter"/>
+            <Viewbox x:Key="CopyToClipboardIcon" Width="16" Height="16" x:Shared="False">
+                <Canvas Width="24" Height="24">
+                    <Path Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"
+                          Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
+                </Canvas>
+            </Viewbox>
+            <Viewbox x:Key="LinkIcon" Width="24" Height="24" x:Shared="False">
+                <Canvas Width="24" Height="24">
+                    <Path Fill="DarkOrange" Data="M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76V7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.54,8.71 19.54,6.81 18.36,5.64C17.19,4.46 15.29,4.46 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,9.17C13.8,8.78 14.44,8.78 14.83,9.17C16.78,11.12 16.78,14.29 14.83,16.24V16.24L11.29,19.78C9.34,21.73 6.17,21.73 4.22,19.78C2.27,17.83 2.27,14.66 4.22,12.71L5.71,11.22C5.7,12.04 5.83,12.86 6.11,13.65L5.64,14.12C4.46,15.29 4.46,17.19 5.64,18.36C6.81,19.54 8.71,19.54 9.88,18.36L13.41,14.83C14.59,13.66 14.59,11.76 13.41,10.59C13,10.2 13,9.56 13.41,9.17Z" />
+                </Canvas>
+            </Viewbox>
+            <Viewbox x:Key="ShowIcon" Width="24" Height="24" x:Shared="False">
+                <Canvas Width="24" Height="24">
+                    <Path Data="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z" 
+                          Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
+                </Canvas>
+            </Viewbox>
+            <Viewbox x:Key="DeleteIcon" Width="24" Height="24" x:Shared="False">
+                <Canvas Width="24" Height="24">
+                    <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" 
+                          Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
+                </Canvas>
+            </Viewbox>
         </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -37,25 +71,57 @@
             </mps:Card>
         </Popup>
 
-        <!--Sort-->
-        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="{DynamicResource ModPlusDefaultMargin}"
-                       Text="{Binding Source={StaticResource Lang}, XPath=h3}"></TextBlock>
-        <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Name="CbSortVariants"
-                      VerticalAlignment="Center" HorizontalAlignment="Stretch" 
-                      ItemsSource="{Binding SortVariants}"
-                      SelectedItem="{Binding CurrentSortVariant}"></ComboBox>
+        <!-- Belonging to the view -->
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
+                   Margin="{DynamicResource ModPlusDefaultMargin}"
+                   Text="{Binding Source={StaticResource Lang}, XPath=h3}"/>
+        <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Name="CbBelongingToViewVariants"
+                  SelectedIndex="{Binding Path=CurrentBelongingToViewVariant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+            Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type enums:BelongingToViewVariant}}">
+            <!-- Все -->
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=all}"/>
+            <!-- Неопределенные -->
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=sv1}"/>
+            <!-- Принадлежащие виду -->
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=sv2}"/>
+            <!-- Не принадлежащие виду -->
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=sv3}"/>
+        </ComboBox>
+
+        <!-- Insert types -->
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"
+                   Margin="{DynamicResource ModPlusDefaultMargin}"
+                   Text="{Binding Source={StaticResource Lang}, XPath=h15}"/>
+        <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="CbInsertTypeVariants"
+                  SelectedIndex="{Binding Path=CurrentInsertTypeVariant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+            Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type enums:InsertTypeVariant}}">
+            <!-- Все -->
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=all}"/>
+            <!-- Импортированные -->
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=iv1}"/>
+            <!-- Вставленные как связь -->
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=iv2}"/>
+        </ComboBox>
+        
         <!--Search-->
-        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Name="TbSearch"
-                     Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                   mps:HintAssist.Hint="{Binding Source={StaticResource Lang}, XPath=h4}"
-                     mps:HintAssist.IsFloating="True"
-                    mps:TextFieldAssist.ClearTextButton="True"></TextBox>
+        <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Name="TbSearch"
+                 Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 mps:HintAssist.Hint="{Binding Source={StaticResource Lang}, XPath=h4}"
+                 mps:HintAssist.IsFloating="True"
+                 mps:TextFieldAssist.ClearTextButton="True"></TextBox>
+        
         <!--List of ImportInstances-->
-        <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Name="DgItems"
-                      ItemsSource="{Binding DwgImportsItemsToShow}"
-                      AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
-                      CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False"
-                      CanUserSortColumns="False" HeadersVisibility="None">
+        <DataGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="DgItems"
+                  ItemsSource="{Binding Path=DwgImportsItems}"
+                  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                  CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False"
+                  CanUserSortColumns="False" HeadersVisibility="None">
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource ModPlusDataGridRow}">
+                    <Setter Property="Visibility" Value="{Binding Path=Visibility}"/>
+                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Style>
+            </DataGrid.ItemContainerStyle>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="*">
                     <DataGridTemplateColumn.CellTemplate>
@@ -66,76 +132,60 @@
                                     <RowDefinition Height="Auto"></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <!---->
-                                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-                                        <Button Margin="2,0,0,0" Style="{DynamicResource ModPlusFlatButton}"
-                                                MinWidth="0" Padding="2"
-                                                ToolTip="{Binding Source={StaticResource Lang}, XPath=h6}"
-                                                ToolTipService.InitialShowDelay="100"
-                                                Command="{Binding CopyIdToClipboard}">
-                                            <Viewbox Width="16" Height="16">
-                                                <Canvas Width="24" Height="24">
-                                                    <Path Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"
-                                                          Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
-                                                </Canvas>
-                                            </Viewbox>
-                                        </Button>
-                                        <TextBlock Margin="2" VerticalAlignment="Center" TextWrapping="Wrap">
-                                            <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h5}" Margin="0"></TextBlock>
-                                            <TextBlock Text="{Binding Name}" Margin="2,0,0,0"></TextBlock>
-                                            <TextBlock Text=". Id:" Margin="0"></TextBlock>
-                                            <TextBlock Text="{Binding IdToShow}" Margin="2,0,0,0"></TextBlock>
-                                        </TextBlock>
-                                    </StackPanel>
-                                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                                        <Button Margin="2,0,0,0" Style="{DynamicResource ModPlusFlatButton}"
-                                                MinWidth="0" Padding="2"
-                                                ToolTip="{Binding Source={StaticResource Lang}, XPath=h6}"
-                                                ToolTipService.InitialShowDelay="100"
-                                                Command="{Binding CopyOwnerViewIdToClipboard}">
-                                            <Viewbox Width="16" Height="16">
-                                                <Canvas Width="24" Height="24">
-                                                    <Path Data="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"
-                                                          Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
-                                                </Canvas>
-                                            </Viewbox>
-                                        </Button>
-                                        <TextBlock Margin="2" VerticalAlignment="Center" TextWrapping="Wrap">
-                                            <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h7}" Margin="0"></TextBlock>
-                                            <TextBlock Text="{Binding OwnerViewName}" Margin="2,0,0,0"></TextBlock>
-                                            <TextBlock Text=". Id:" Margin="0"></TextBlock>
-                                            <TextBlock Text="{Binding OwnerViewIdToShow}" Margin="2,0,0,0"></TextBlock>
-                                        </TextBlock>
-                                    </StackPanel>
-                                    <!--Buttons-->
-                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" 
+                                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                                    <Button Margin="2,0,0,0" Style="{DynamicResource ModPlusFlatButton}"
+                                            MinWidth="0" Padding="2" Content="{StaticResource CopyToClipboardIcon}"
+                                            ToolTip="{Binding Source={StaticResource Lang}, XPath=h6}"
+                                            ToolTipService.InitialShowDelay="100"
+                                            Command="{Binding Path=CopyIdToClipboard}"/>
+                                    <TextBlock Margin="2" VerticalAlignment="Center" TextWrapping="Wrap">
+                                        <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h5}" Margin="0"></TextBlock>
+                                        <TextBlock Text="{Binding Name}" Margin="2,0,0,0"></TextBlock>
+                                        <TextBlock Text=". Id:" Margin="0"></TextBlock>
+                                        <TextBlock Text="{Binding IdToShow}" Margin="2,0,0,0"></TextBlock>
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                                    <Button Margin="2,0,0,0" Style="{DynamicResource ModPlusFlatButton}"
+                                            MinWidth="0" Padding="2" Content="{StaticResource CopyToClipboardIcon}"
+                                            ToolTip="{Binding Source={StaticResource Lang}, XPath=h6}"
+                                            ToolTipService.InitialShowDelay="100"
+                                            Command="{Binding CopyOwnerViewIdToClipboard}"/>
+                                    <TextBlock Margin="2" VerticalAlignment="Center" TextWrapping="Wrap">
+                                        <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h7}" Margin="0"></TextBlock>
+                                        <TextBlock Text="{Binding OwnerViewName}" Margin="2,0,0,0"></TextBlock>
+                                        <TextBlock Text=". Id:" Margin="0"></TextBlock>
+                                        <TextBlock Text="{Binding OwnerViewIdToShow}" Margin="2,0,0,0"></TextBlock>
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <!-- IsLinked -->
+                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
+                                        Style="{DynamicResource ModPlusTransparentRoundButton}"
+                                        Visibility="{Binding Path=IsLinked, Converter={StaticResource TrueToVisible}}"
+                                        Content="{StaticResource LinkIcon}"
+                                        ToolTip="{Binding Source={StaticResource Lang}, XPath=h14}"
+                                        ToolTipService.InitialShowDelay="100"/>
+                                <!-- show -->
+                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" 
                                         Style="{DynamicResource ModPlusTransparentRoundButton}"
                                         ToolTip="{Binding Source={StaticResource Lang}, XPath=h8}"
                                         ToolTipService.InitialShowDelay="100"
-                                        Command="{Binding ShowItem}">
-                                    <Viewbox Width="24" Height="24">
-                                        <Canvas Width="24" Height="24">
-                                            <Path Data="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z" 
-                                                  Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
-                                        </Canvas>
-                                    </Viewbox>
-                                </Button>
-                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" 
+                                        Command="{Binding Path=ShowItem}"
+                                        Content="{StaticResource ShowIcon}"/>
+                                <!-- delete -->
+                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" 
                                         Style="{DynamicResource ModPlusTransparentRoundButton}"
                                         ToolTip="{Binding Source={StaticResource Lang}, XPath=h9}"
                                         ToolTipService.InitialShowDelay="100"
-                                        Command="{Binding DeleteItem}">
-                                    <Viewbox Width="24" Height="24">
-                                        <Canvas Width="24" Height="24">
-                                            <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" 
-                                                  Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
-                                        </Canvas>
-                                    </Viewbox>
-                                </Button>
+                                        Command="{Binding Path=DeleteItem}"
+                                        Content="{StaticResource DeleteIcon}"/>
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -144,23 +194,23 @@
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{Binding Source={StaticResource Lang}, XPath=h10}"
-                              Command="{Binding SelectAllCommand}"></MenuItem>
+                              Command="{Binding Path=SelectAllCommand}"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
+        
         <!--Progress-->
-        <ProgressBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Name="ProgressBar" 
+        <ProgressBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Name="ProgressBar" 
                      Visibility="Hidden" Value="50"></ProgressBar>
-        <TextBlock Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Name="ProgressText" Visibility="Collapsed"
+        <TextBlock Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Name="ProgressText" Visibility="Collapsed"
                    Margin="0 0 15 0" TextAlignment="Right"
-                   FontWeight="SemiBold" HorizontalAlignment="Right" Foreground="{DynamicResource BlackBrush}" Text="1/100"></TextBlock>
+                   FontWeight="SemiBold" HorizontalAlignment="Right" Foreground="{DynamicResource BlackBrush}" Text="1/100"/>
 
-        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left"
-                Name="BtDeleteSelected" Command="{Binding Path=DeleteSelectedCommand}"
-                CommandParameter="{Binding ElementName=DgItems, Path=SelectedItems}">
+        <Button Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left"
+                Name="BtDeleteSelected" Command="{Binding Path=DeleteSelectedCommand}">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h13}"></TextBlock>
-                <TextBlock Text="{Binding ElementName=DgItems, Path=SelectedItems.Count}" Margin="4,0,0,0"></TextBlock>
+                <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h13}"/>
+                <TextBlock Text="{Binding Path=SelectedItemsCount}" Margin="4 0 0 0"/>
             </StackPanel>
         </Button>
     </Grid>

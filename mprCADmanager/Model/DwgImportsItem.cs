@@ -22,6 +22,8 @@
         private ElementId _id;
         private Category _category;
         private ElementId _ownerViewId;
+        private System.Windows.Visibility _visibility;
+        private bool _isSelected;
 
         /// <summary>
         /// Конструктор
@@ -49,6 +51,9 @@
 
             Name = GetName(element);
 
+            if (element is ImportInstance importInstance)
+                IsLinked = importInstance.IsLinked;
+
             // commands
             CopyIdToClipboard = new RelayCommandWithoutParameter(CopyIdToClipboardAction);
             CopyOwnerViewIdToClipboard = new RelayCommandWithoutParameter(CopyOwnerViewIdToClipboardAction);
@@ -56,9 +61,14 @@
             DeleteItem = new RelayCommandWithoutParameter(DeleteItemAction);
         }
         
+        /// <summary>
+        /// Ссылка на главную модель
+        /// </summary>
         public DWGImportManagerVM DwgImportManagerVm { get; }
 
-        /// <summary>Принадлежит ли элемент вид</summary>
+        /// <summary>
+        /// Принадлежит ли элемент виду
+        /// </summary>
         public bool ViewSpecific
         {
             get => _viewSpecific;
@@ -69,7 +79,9 @@
             }
         }
 
-        /// <summary>Категория элемента</summary>
+        /// <summary>
+        /// Категория элемента
+        /// </summary>
         /// <remarks>Может быть Null</remarks>
         public Category Category
         {
@@ -81,10 +93,14 @@
             }
         }
 
-        /// <summary>Имя элемента</summary>
+        /// <summary>
+        /// Имя элемента
+        /// </summary>
         public string Name { get; }
 
-        /// <summary>ElementId элемента вставки</summary>
+        /// <summary>
+        /// ElementId элемента вставки
+        /// </summary>
         public ElementId Id
         {
             get => _id;
@@ -97,7 +113,9 @@
 
         public string IdToShow => Id.ToString();
 
-        /// <summary>ElementId вида, которому принадлежит элемент вставки</summary>
+        /// <summary>
+        /// ElementId вида, которому принадлежит элемент вставки
+        /// </summary>
         public ElementId OwnerViewId
         {
             get => _ownerViewId;
@@ -110,7 +128,9 @@
 
         public string OwnerViewIdToShow => OwnerViewId.ToString();
 
-        /// <summary>Имя вида, которому принадлежит элемент вставки</summary>
+        /// <summary>
+        /// Имя вида, которому принадлежит элемент вставки
+        /// </summary>
         public string OwnerViewName
         {
             get
@@ -129,6 +149,41 @@
                 }
 
                 return Language.GetItem(LangItem, "msg5");
+            }
+        }
+
+        /// <summary>
+        /// Identifies whether this instance is a linked object rather than imported one.
+        /// </summary>
+        public bool IsLinked { get; }
+
+        /// <summary>
+        /// Видимость элемента в списке
+        /// </summary>
+        public System.Windows.Visibility Visibility
+        {
+            get => _visibility;
+            set
+            {
+                if (_visibility == value)
+                    return;
+                _visibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Элемент выбран в списке
+        /// </summary>
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected == value)
+                    return;
+                _isSelected = value;
+                OnPropertyChanged();
             }
         }
         
@@ -165,7 +220,8 @@
                 DWGImportManagerCommand.MainWindow.Topmost = false;
                 var taskDialog = new TaskDialog(Language.GetItem(LangItem, "h1"))
                 {
-                    MainContent = Language.GetItem(LangItem, "msg6") + " \"" + Name + "\" " + Language.GetItem(LangItem, "msg7"),
+                    MainContent =
+                        $"{Language.GetItem(LangItem, "msg6")} \"{Name}\" {Language.GetItem(LangItem, "msg7")}",
                     CommonButtons = TaskDialogCommonButtons.None
                 };
                 taskDialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, Language.GetItem(LangItem, "yes"));

@@ -47,7 +47,8 @@
                     MainWindow.ProgressBar.Maximum = _elementIds.Count;
                     MainWindow.ProgressBar.Value = 0;
                     MainWindow.DgItems.IsEnabled = false;
-                    MainWindow.CbSortVariants.IsEnabled = false;
+                    MainWindow.CbBelongingToViewVariants.IsEnabled = false;
+                    MainWindow.CbInsertTypeVariants.IsEnabled = false;
                     MainWindow.TbSearch.IsEnabled = false;
                     MainWindow.BtDeleteSelected.IsEnabled = false;
                     MainWindow.Topmost = false;
@@ -61,7 +62,8 @@
                     MainWindow?.Dispatcher?.Invoke(() =>
                     {
                         MainWindow.ProgressBar.Value = progressIndex;
-                        MainWindow.ProgressText.Text = Language.GetItem(LangItem, "msg20") + " " + progressIndex + "/" + _elementIds.Count;
+                        MainWindow.ProgressText.Text =
+                            $"{Language.GetItem(LangItem, "msg20")} {progressIndex}/{_elementIds.Count}";
                     });
                     System.Windows.Forms.Application.DoEvents();
                     using (var t = new Transaction(_doc, _tName))
@@ -79,7 +81,7 @@
 
                 if (_undeleted > 0)
                 {
-                    MessageBox.Show(Language.GetItem(LangItem, "msg21") + ": " + _undeleted);
+                    MessageBox.Show($"{Language.GetItem(LangItem, "msg21")}: {_undeleted}");
                     _undeleted = 0;
                 }
 
@@ -88,7 +90,8 @@
                     MainWindow.ProgressBar.Visibility = Visibility.Collapsed;
                     MainWindow.ProgressText.Visibility = Visibility.Collapsed;
                     MainWindow.DgItems.IsEnabled = true;
-                    MainWindow.CbSortVariants.IsEnabled = true;
+                    MainWindow.CbBelongingToViewVariants.IsEnabled = true;
+                    MainWindow.CbInsertTypeVariants.IsEnabled = true;
                     MainWindow.TbSearch.IsEnabled = true;
                     MainWindow.BtDeleteSelected.IsEnabled = true;
                     MainWindow.Topmost = true;

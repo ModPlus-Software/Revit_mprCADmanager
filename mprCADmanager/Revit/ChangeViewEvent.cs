@@ -55,7 +55,8 @@
                             {
                                 var taskDialog = new TaskDialog(Language.GetItem(LangItem, "h1"))
                                 {
-                                    MainContent = Language.GetItem(LangItem, "msg8") + " " + view.Name + " " + Language.GetItem(LangItem, "msg9"),
+                                    MainContent =
+                                        $"{Language.GetItem(LangItem, "msg8")} {view.Name} {Language.GetItem(LangItem, "msg9")}",
                                     CommonButtons = TaskDialogCommonButtons.None
                                 };
                                 taskDialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, Language.GetItem(LangItem, "msg10"));
@@ -89,9 +90,8 @@
                                 {
                                     var taskDialog = new TaskDialog(Language.GetItem(LangItem, "h1"))
                                     {
-                                        MainContent = Language.GetItem(LangItem, "msg12") + " " + _dwgImportsItem.Category.Name +
-                                                      " " + Language.GetItem(LangItem, "msg13") + " " + view.Name +
-                                                      Environment.NewLine + Language.GetItem(LangItem, "msg14"),
+                                        MainContent =
+                                            $"{Language.GetItem(LangItem, "msg12")} {_dwgImportsItem.Category.Name} {Language.GetItem(LangItem, "msg13")} {view.Name}{Environment.NewLine}{Language.GetItem(LangItem, "msg14")}",
                                         CommonButtons = TaskDialogCommonButtons.None
                                     };
                                     taskDialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, Language.GetItem(LangItem, "msg15"));
@@ -125,9 +125,8 @@
                                 {
                                     var taskDialog = new TaskDialog(Language.GetItem(LangItem, "h1"))
                                     {
-                                        MainContent = Language.GetItem(LangItem, "msg6") + " " + _dwgImportsItem.Name +
-                                                      " " + Language.GetItem(LangItem, "msg16") + " " + view.Name +
-                                                      Environment.NewLine + Language.GetItem(LangItem, "msg14"),
+                                        MainContent =
+                                            $"{Language.GetItem(LangItem, "msg6")} {_dwgImportsItem.Name} {Language.GetItem(LangItem, "msg16")} {view.Name}{Environment.NewLine}{Language.GetItem(LangItem, "msg14")}",
                                         CommonButtons = TaskDialogCommonButtons.None
                                     };
                                     taskDialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, Language.GetItem(LangItem, "msg17"));
