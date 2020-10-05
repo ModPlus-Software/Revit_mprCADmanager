@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows;
     using Autodesk.Revit.Attributes;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.DB.Events;
@@ -13,6 +14,7 @@
     using Revit;
     using View;
     using ViewModel;
+    using MessageBox = ModPlusAPI.Windows.MessageBox;
 
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
@@ -37,11 +39,7 @@
 
                 _uiApplication = commandData.Application;
                 _currentDocument = _uiApplication.ActiveUIDocument.Document;
-                _uiApplication.Application.DocumentClosed += Application_DocumentClosed;
-                _uiApplication.ViewActivated += UiApplication_ViewActivated;
-                _uiApplication.Application.DocumentChanged += Application_DocumentChanged;
-                _uiApplication.Application.DocumentCreated += Application_DocumentCreated;
-
+                
                 _deleteElementEvent = new DeleteElementEvent();
                 _removeEvents = new RemoveEvents();
                 _changeViewEvent = new ChangeViewEvent();
@@ -133,6 +131,7 @@
                 {
                     MainWindow = new DWGImportManagerWindow();
                     _deleteManyElementsEvent.MainWindow = MainWindow;
+                    MainWindow.Loaded += MainWindowOnLoaded;
                     MainWindow.Closed += MainWindow_Closed;
                     _dwgImportManagerVm = new DWGImportManagerVM(_uiApplication, col, _deleteElementEvent, _changeViewEvent, _deleteManyElementsEvent);
                     MainWindow.DataContext = _dwgImportManagerVm;
@@ -151,9 +150,16 @@
             else
             {
                 MessageBox.Show(Language.GetItem(LangItem, "msg2"));
-                if (MainWindow != null)
-                    MainWindow.DataContext = null;
+                MainWindow?.Close();
             }
+        }
+
+        private void MainWindowOnLoaded(object sender, RoutedEventArgs e)
+        {
+            _uiApplication.Application.DocumentClosed += Application_DocumentClosed;
+            _uiApplication.ViewActivated += UiApplication_ViewActivated;
+            _uiApplication.Application.DocumentChanged += Application_DocumentChanged;
+            _uiApplication.Application.DocumentCreated += Application_DocumentCreated;
         }
 
         public static List<Element> GetElements(Document document)
