@@ -10,7 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nuke.Common" Version="0.24.2" />
+    <PackageReference Include="ModPlusNuke" Version="1.0.0" />
+    <PackageReference Include="Nuke.Common" Version="0.25.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,8 +20,8 @@
     <None Remove="*.csproj.DotSettings;*.ref.*.txt" />
 
     <!-- Common build related files -->
-    <None Include="..\mprCADmanager\build.ps1" />
-    <None Include="..\mprCADmanager\build.sh" />
+    <None Include="..\build.ps1" />
+    <None Include="..\build.sh" />
 
     <None Include="..\.nuke" LinkBase="config" />
     <None Include="..\global.json" LinkBase="config" Condition="Exists('..\global.json')" />

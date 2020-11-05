@@ -35,11 +35,13 @@
         {
             try
             {
+#if !DEBUG
                 Statistic.SendCommandStarting(new ModPlusConnector());
+#endif
 
                 _uiApplication = commandData.Application;
                 _currentDocument = _uiApplication.ActiveUIDocument.Document;
-                
+
                 _deleteElementEvent = new DeleteElementEvent();
                 _removeEvents = new RemoveEvents();
                 _changeViewEvent = new ChangeViewEvent();
